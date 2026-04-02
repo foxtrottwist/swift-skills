@@ -1,0 +1,8 @@
+[
+  {"pattern": "Button.*Image\\(", "severity": "warning", "message": "Button with Image content — verify .accessibilityLabel is present"},
+  {"pattern": "\\.font\\(\\.system\\(size:", "severity": "warning", "message": "Hardcoded font size — use .relativeTo for Dynamic Type support", "replacement": ".font(.system(size: N, design: .default).leading(.standard))"},
+  {"pattern": "\\.frame\\(width: [0-9]", "severity": "info", "message": "Small frame on possible interactive element — verify 44pt minimum touch target"},
+  {"pattern": "\\.frame\\(height: [0-9]", "severity": "info", "message": "Small frame on possible interactive element — verify 44pt minimum touch target"},
+  {"pattern": "onTapGesture", "severity": "warning", "message": "Tap gesture without button semantics — verify .accessibilityAddTraits(.isButton) is present"},
+  {"pattern": "withAnimation", "severity": "info", "message": "Animation — verify UIAccessibility.isReduceMotionEnabled or @Environment(\\.accessibilityReduceMotion) check"}
+]

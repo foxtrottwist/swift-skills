@@ -1,0 +1,10 @@
+{
+  "name": "swift-skills",
+  "version": "0.1.0",
+  "description": "Swift, SwiftUI, and iOS development skills. Foundation Models (on-device LLM), SwiftData persistence, iOS 26 SwiftUI/Liquid Glass, accessibility diagnostics, Swizzle CLI, and structured logging patterns.",
+  "author": {
+    "name": "Law Horne"
+  },
+  "repository": "https://github.com/Foxtrottwist/swift-skills",
+  "license": "MIT"
+}

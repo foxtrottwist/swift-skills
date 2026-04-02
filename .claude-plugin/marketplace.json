@@ -1,0 +1,28 @@
+{
+  "name": "swift-skills",
+  "description": "Swift, SwiftUI, and iOS development skills for Claude Code.",
+  "owner": {
+    "name": "Law Horne"
+  },
+  "plugins": [
+    {
+      "name": "swift-skills",
+      "description": "Six skills for Swift/iOS development: Foundation Models (complete guide with API reference, anti-patterns, and diagnostics), SwiftData persistence, iOS 26 SwiftUI/Liquid Glass reference, accessibility diagnostics, Swizzle CLI integration, and structured logging patterns. Includes hooks for Swift pattern enforcement and skill discovery.",
+      "version": "0.1.0",
+      "source": "./",
+      "repository": "https://github.com/Foxtrottwist/swift-skills",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "swift",
+        "swiftui",
+        "ios",
+        "swiftdata",
+        "foundation-models",
+        "accessibility",
+        "xcode",
+        "apple"
+      ]
+    }
+  ]
+}
