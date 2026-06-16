@@ -8,7 +8,7 @@
     {
       "name": "swift-skills",
       "description": "Four skills for Swift/iOS development: Foundation Models (complete guide with API reference, anti-patterns, and diagnostics), SwiftData persistence, accessibility diagnostics, and structured logging patterns. Includes a hook for Swift pattern enforcement (blocks deprecated APIs). SwiftUI is covered by Apple's official Xcode 27 agent skills.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": "./",
       "repository": "https://github.com/Foxtrottwist/swift-skills",
       "license": "MIT",

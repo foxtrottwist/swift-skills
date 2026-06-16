@@ -1,6 +1,6 @@
 {
   "name": "swift-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Four Swift/iOS skills: Foundation Models (on-device LLM), SwiftData persistence, accessibility diagnostics, and structured logging. Hooks enforce Swift patterns (blocks deprecated APIs). SwiftUI is covered by Apple's official Xcode 27 agent skills.",
   "author": {
     "name": "Law Horne"

@@ -1,6 +1,6 @@
 ---
 name: foundation-models
-description: "Complete guide for Apple's on-device Foundation Models framework (3B LLM, iOS 26+).
+description: "Complete guide for Apple's on-device Foundation Models framework (iOS 26+).
   Use when implementing, debugging, or architecting with Foundation Models.
   Triggers on: 'Foundation Models', 'LanguageModelSession', '@Generable', '@Guide',
   'on-device LLM', 'FM framework'. Covers API reference, anti-patterns, decision trees,
@@ -9,7 +9,7 @@ description: "Complete guide for Apple's on-device Foundation Models framework (
 
 # Foundation Models
 
-3B parameter on-device LLM. 2-bit quantized, 4096 token context (input + output combined). Optimized for summarization, extraction, classification, and generation. No network, no cost, no data leaves device.
+Apple's on-device LLM. Its context window (input + output combined) is model-version-dependent and can differ across OS releases — query it at runtime with `SystemLanguageModel.default.contextSize` rather than hardcoding a number. (At the time of writing, Apple documents the base model at 4,096 tokens, but treat that as a current value, not a fixed contract.) Optimized for summarization, extraction, classification, and generation. No network, no cost, no data leaves device.
 
 ## Worked Example
 
@@ -90,7 +90,7 @@ for try await partial in session.streamResponse(to: prompt) {
 ### 3: Context Overflow from Unbounded Conversations
 
 ```swift
-// WRONG: Endless multi-turn — crashes at 4096 token limit
+// WRONG: Endless multi-turn — crashes when the context window fills
 
 // RIGHT: Catch and recover
 catch LanguageModelSession.GenerationError.exceededContextWindowSize {
@@ -98,7 +98,7 @@ catch LanguageModelSession.GenerationError.exceededContextWindowSize {
 }
 ```
 
-The 4096 token context is TOTAL — instructions + schema + transcript + new prompt + output.
+The context window is TOTAL — instructions + schema + transcript + new prompt + output all count against it. Read the actual limit from `SystemLanguageModel.default.contextSize`; don't assume a fixed number.
 
 ### 4: User Input in Instructions (Prompt Injection)
 
@@ -119,7 +119,7 @@ Use `class` (not `struct`) when tools track state across calls. Struct copies lo
 
 ### 6: Over-Complex Instructions Duplicating @Generable
 
-`@Generable` and `@Guide` encode output structure at the decoding level. Don't repeat the schema in instructions — it wastes tokens (critical with 4096 limit). Use instructions for tone and behavioral constraints only.
+`@Generable` and `@Guide` encode output structure at the decoding level. Don't repeat the schema in instructions — it wastes tokens (critical given the limited context window). Use instructions for tone and behavioral constraints only.
 
 ---
 
@@ -132,7 +132,7 @@ Use `class` (not `struct`) when tools track state across calls. Struct copies lo
 | Privacy required / offline needed / avoid per-request cost? | FM |
 | Summarization, extraction, or classification? | FM |
 | World knowledge, complex reasoning, math, or translation? | Server API |
-| Need >4096 token context? | Server API |
+| Need more context than `SystemLanguageModel.default.contextSize` allows? | Server API |
 
 Both can coexist in one app.
 
@@ -152,7 +152,7 @@ FM: private, offline, no latency, no per-request cost, no API keys. Server API: 
 
 ### "One Big Prompt for Everything"
 
-4096 tokens is TOTAL. Keep instructions concise, use @Generable instead of describing format, chunk large inputs, monitor with `tokenUsage(for:)`, catch `exceededContextWindowSize` for multi-turn.
+The context window is TOTAL (query it via `SystemLanguageModel.default.contextSize`). Keep instructions concise, use @Generable instead of describing format, chunk large inputs, monitor with `tokenUsage(for:)`, catch `exceededContextWindowSize` for multi-turn.
 
 ### "Skip Availability Checks"
 
@@ -181,4 +181,4 @@ Full triage procedures and production crisis playbook: [references/diagnostics.m
 
 - **[API Reference](references/api-reference.md)** — Complete API with WWDC code examples
 - **[Diagnostics](references/diagnostics.md)** — Error triage, Instruments workflow, production crisis defense
-- **WWDC Sessions**: 286, 259, 301
+- **WWDC Sessions**: 286, 259, 301 (2025, historical anchors). Newer Foundation Models sessions ship with later releases (2026 / Xcode 27) — check the current WWDC catalog for updated guidance.

@@ -14,8 +14,8 @@ Apple's native persistence framework using `@Model` classes and declarative quer
 
 **Core principle** Reference types (`class`) + `@Model` macro + declarative `@Query` for reactive SwiftUI integration.
 
-**Requires** iOS 17+, Swift 5.9+
-**Target** iOS 26+ (this skill focuses on latest features)
+**Requires** iOS 17+ (SwiftData baseline), current Swift toolchain
+**Target** iOS 26 / iOS 27 (this skill focuses on current-release features)
 **License** Proprietary (Apple)
 
 ## When to Use SwiftData
@@ -656,15 +656,17 @@ actor ConflictResolver {
 
 ```swift
 import Network
+import Observation
 
 @MainActor
-class NetworkMonitor: ObservableObject {
-    @Published var isConnected = false
+@Observable
+final class NetworkMonitor {
+    var isConnected = false
     private let monitor = NWPathMonitor()
 
     init() {
         monitor.pathUpdateHandler = { [weak self] path in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self?.isConnected = path.status == .satisfied
             }
         }
@@ -673,7 +675,7 @@ class NetworkMonitor: ObservableObject {
 }
 
 struct OfflineAwareView: View {
-    @StateObject private var networkMonitor = NetworkMonitor()
+    @State private var networkMonitor = NetworkMonitor()
     @Query var tracks: [Track]
 
     var body: some View {
@@ -784,7 +786,7 @@ let container = try ModelContainer(for: schema, configurations: testConfig)
 3. Use real device (simulator CloudKit is unreliable)
 4. Check iCloud status in Settings → [Your Name] → iCloud
 
-## iOS 26+ Features
+## Current-Release Features (iOS 26 / iOS 27)
 
 ### Enhanced Relationship Handling
 
@@ -1370,29 +1372,36 @@ let container = try ModelContainer(for: schema, configurations: config)
 ### Test Setup
 
 ```swift
-import XCTest
+import Testing
 import SwiftData
 @testable import MusicApp
 
-final class TrackTests: XCTestCase {
-    var modelContext: ModelContext!
+@MainActor
+struct TrackTests {
+    let modelContext: ModelContext
 
-    override func setUp() async throws {
+    init() throws {
         let schema = Schema([Track.self])
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        // .none disables CloudKit for the in-memory store (required on iOS 27).
+        let config = ModelConfiguration(
+            isStoredInMemoryOnly: true,
+            cloudKitDatabase: .none
+        )
         let container = try ModelContainer(for: schema, configurations: config)
         modelContext = ModelContext(container)
     }
 
-    func testInsertTrack() throws {
+    @Test
+    func insertTrack() throws {
         let track = Track(id: "1", title: "Test", artist: "Artist", duration: 240)
         modelContext.insert(track)
 
         let descriptor = FetchDescriptor<Track>()
         let tracks = try modelContext.fetch(descriptor)
 
-        XCTAssertEqual(tracks.count, 1)
-        XCTAssertEqual(tracks.first?.title, "Test")
+        #expect(tracks.count == 1)
+        let first = try #require(tracks.first)
+        #expect(first.title == "Test")
     }
 }
 ```
@@ -1484,7 +1493,7 @@ modelContext.insert(track)
 
 ---
 
-**Created** 2025-11-28
-**Targets** iOS 17+ (focus on iOS 26+ features)
+**Updated** 2026-06
+**Targets** iOS 17+ baseline (focus on iOS 26 / iOS 27 features)
 **Framework** SwiftData (Apple)
-**Swift** 5.9+ (Swift 6 concurrency patterns)
+**Swift** Current toolchain (Swift 6 concurrency patterns)
