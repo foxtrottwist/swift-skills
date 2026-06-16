@@ -1,7 +1,7 @@
 {
   "name": "swift-skills",
-  "version": "0.1.0",
-  "description": "Swift, SwiftUI, and iOS development skills. Foundation Models (on-device LLM), SwiftData persistence, iOS 26 SwiftUI/Liquid Glass, accessibility diagnostics, Swizzle CLI, and structured logging patterns.",
+  "version": "0.2.0",
+  "description": "Four Swift/iOS skills: Foundation Models (on-device LLM), SwiftData persistence, accessibility diagnostics, and structured logging. Hooks enforce Swift patterns (blocks deprecated APIs). SwiftUI is covered by Apple's official Xcode 27 agent skills.",
   "author": {
     "name": "Law Horne"
   },
